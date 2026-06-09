@@ -1,0 +1,39 @@
+services:
+
+  api:
+    build: .
+    container_name: ai-code-review-assistant-api
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - db
+
+    env_file:
+      - .env
+
+    volumes:
+      - .:/app
+
+    restart: always
+
+  db:
+    image: postgres:15
+    container_name: ai-code-review-assistant-db
+
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Anurag@2003
+      POSTGRES_DB: reviews
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

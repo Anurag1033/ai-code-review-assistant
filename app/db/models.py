@@ -1,9 +1,18 @@
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, Text
+from sqlalchemy import (
+    Column,
+    Integer,
+    Text,
+    String,
+    DateTime
+)
 
-Base = declarative_base()
+from datetime import datetime
+
+from app.db.database import Base
+
 
 class Review(Base):
+
     __tablename__ = "reviews"
 
     id = Column(
@@ -12,6 +21,22 @@ class Review(Base):
         index=True
     )
 
-    code = Column(Text)
+    code = Column(
+        Text,
+        nullable=False
+    )
 
-    review = Column(Text)
+    language = Column(
+        String,
+        nullable=False
+    )
+
+    review = Column(
+        Text,
+        nullable=False
+    )
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
