@@ -1,16 +1,51 @@
 # 🚀 AI Code Review Assistant
 
-An AI-powered code review platform that automatically analyzes source code, identifies bugs, suggests improvements, and stores review history using Large Language Models (LLMs).
+An AI-powered code review platform that automatically analyzes source code using Google's Gemini LLM, generates detailed code reviews, detects programming languages, stores review history in PostgreSQL, and runs seamlessly inside Docker containers.
 
 ---
 
 # 📖 Overview
 
-I built this project to automate the software code review process using Generative AI.
+AI Code Review Assistant automates the software code review process using Generative AI.
 
-Developers can submit source code through REST APIs, and the system leverages Google's Gemini model through LangChain to generate detailed code reviews, including bug detection, security concerns, performance recommendations, and overall code quality ratings.
+Developers can submit source code through REST APIs, and the system leverages Google's Gemini model via LangChain to generate detailed code reviews, including:
 
-All generated reviews are persisted in PostgreSQL, allowing developers to track and revisit previous reviews.
+* Bug Detection
+* Security Analysis
+* Performance Suggestions
+* Code Quality Improvements
+* Overall Rating
+
+All generated reviews are stored in PostgreSQL for future reference, filtering, analytics, and review history tracking.
+
+---
+
+# ✨ Features
+
+### AI-Powered Reviews
+
+* Automated code analysis using Gemini
+* Detailed review reports
+* Security and performance recommendations
+
+### Review Management
+
+* Save reviews in PostgreSQL
+* Retrieve review history
+* Get review by ID
+* Delete reviews
+
+### Advanced APIs
+
+* Pagination support
+* Review filtering by programming language
+* Review statistics dashboard
+
+### Containerized Deployment
+
+* Dockerized application
+* Docker Compose support
+* One-command deployment
 
 ---
 
@@ -18,7 +53,7 @@ All generated reviews are persisted in PostgreSQL, allowing developers to track 
 
 ```text
                     +-------------------+
-                    |      Developer    |
+                    |     Developer     |
                     +---------+---------+
                               |
                               | HTTP Request
@@ -41,11 +76,10 @@ All generated reviews are persisted in PostgreSQL, allowing developers to track 
                               |
                               v
                     +-------------------+
-                    |    Gemini API     |
-                    | Code Analysis AI  |
+                    |   Gemini 2.5      |
+                    |  Code Analysis    |
                     +---------+---------+
                               |
-                              | Review Result
                               v
                     +-------------------+
                     |    PostgreSQL     |
@@ -57,181 +91,46 @@ All generated reviews are persisted in PostgreSQL, allowing developers to track 
 
 # 🛠️ Tech Stack
 
-### Backend
+## Backend
 
 * Python 3.12
 * FastAPI
 * Pydantic
 
-### AI & LLM
+## AI & LLM
 
-* Google Gemini API
+* Google Gemini 2.5 Flash
 * LangChain
 * Prompt Engineering
 
-### Database
+## Database
 
 * PostgreSQL
 * SQLAlchemy ORM
 
-### Development Tools
+## DevOps
+
+* Docker
+* Docker Compose
+
+## Development Tools
 
 * Git
 * GitHub
-* Virtual Environment (venv)
 
 ---
 
-# 🧩 Core Components
+# 📡 API Endpoints
 
-## FastAPI Application
-
-**Responsibility:**
-
-* Exposes REST APIs
-* Handles incoming code review requests
-* Returns AI-generated responses
-
-### Available Endpoints
+## Home
 
 ```http
 GET /
-POST /review
-GET /reviews
-GET /review/{id}
 ```
 
 ---
 
-## LangChain Review Pipeline
-
-**Responsibility:**
-
-* Creates structured prompts
-* Sends code to Gemini
-* Receives and processes AI-generated reviews
-
-### Flow
-
-```text
-Source Code
-    ↓
-Prompt Template
-    ↓
-LangChain
-    ↓
-Gemini
-    ↓
-Review Response
-```
-
----
-
-## PostgreSQL Database
-
-**Responsibility:**
-
-Stores:
-
-* Submitted source code
-* Generated AI reviews
-* Review history
-
-### Review Table
-
-```text
-reviews
-│
-├── id
-├── code
-└── review
-```
-
----
-
-# 🚦 Getting Started
-
-## Prerequisites
-
-Install:
-
-* Python 3.12+
-* PostgreSQL
-* Git
-
----
-
-## 1. Clone Repository
-
-```bash
-git clone <repository-url>
-
-cd ai-code-review-assistant
-```
-
----
-
-## 2. Create Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-Activate:
-
-### Windows
-
-```bash
-venv\Scripts\activate
-```
-
----
-
-## 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## 4. Configure Environment Variables
-
-Create a `.env` file:
-
-```env
-GOOGLE_API_KEY=your_gemini_api_key
-
-DATABASE_URL=postgresql://postgres:password@localhost:5432/code_review_db
-```
-
----
-
-## 5. Create Database Tables
-
-```bash
-python create_tables.py
-```
-
----
-
-## 6. Run Application
-
-```bash
-uvicorn app.main:app --reload
-```
-
-Open Swagger UI:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
----
-
-# 🧪 Testing the Application
-
-### Review Code
+## Generate Review
 
 ```http
 POST /review
@@ -245,25 +144,25 @@ Request:
 }
 ```
 
-Response:
-
-```json
-{
-  "review": "Detailed AI-generated code review..."
-}
-```
-
 ---
 
-### View Review History
+## Get Paginated Reviews
 
 ```http
-GET /reviews
+GET /reviews?page=1&limit=5
 ```
 
 ---
 
-### Get Review By ID
+## Get Reviews By Language
+
+```http
+GET /reviews/Python
+```
+
+---
+
+## Get Single Review
 
 ```http
 GET /review/1
@@ -271,36 +170,167 @@ GET /review/1
 
 ---
 
-# 📂 Repository Structure
+## Delete Review
+
+```http
+DELETE /review/1
+```
+
+---
+
+## Review Statistics
+
+```http
+GET /stats
+```
+
+Example Response:
+
+```json
+{
+  "total_reviews": 15,
+  "python_reviews": 10,
+  "java_reviews": 2,
+  "javascript_reviews": 2,
+  "cpp_reviews": 1
+}
+```
+
+---
+
+# 🗄️ Database Schema
+
+## reviews
+
+```text
+reviews
+│
+├── id
+├── code
+├── language
+├── review
+└── created_at
+```
+
+---
+
+# 🚀 Getting Started
+
+## Prerequisites
+
+Install:
+
+* Python 3.12+
+* Docker Desktop
+* Git
+
+---
+
+## Clone Repository
+
+```bash
+git clone https://github.com/your-username/ai-code-review-assistant.git
+
+cd ai-code-review-assistant
+```
+
+---
+
+## Configure Environment Variables
+
+Create a `.env` file:
+
+```env
+GOOGLE_API_KEY=your_gemini_api_key
+
+DATABASE_URL=postgresql://postgres:password@db:5432/reviews
+```
+
+---
+
+# 🐳 Run With Docker
+
+Build and start containers:
+
+```bash
+docker compose up --build
+```
+
+Application:
+
+```text
+http://localhost:8000
+```
+
+Swagger Docs:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+# 📂 Project Structure
 
 ```text
 ai-code-review-assistant/
 
 ├── app/
-│   ├── chains/
-│   │   └── reviewer_chain.py
-│   │
-│   ├── db/
-│   │   ├── database.py
-│   │   └── models.py
-│   │
-│   ├── prompts/
-│   │   └── review_prompt.py
-│   │
-│   ├── services/
-│   │   └── reviewer.py
-│   │
-│   └── main.py
 │
-├── .env
-├── create_tables.py
+├── chains/
+│   └── reviewer_chain.py
+│
+├── db/
+│   ├── database.py
+│   ├── models.py
+│   └── init_db.py
+│
+├── prompts/
+│   └── review_prompt.py
+│
+├── schema/
+│   └── review.py
+│
+├── services/
+│   ├── reviewer.py
+│   └── language_detector.py
+│
+├── main.py
+│
+├── Dockerfile
+├── docker-compose.yml
 ├── requirements.txt
+├── .dockerignore
+├── .gitignore
 ├── README.md
-└── .gitignore
+└── .env
 ```
+
+---
+
+# 🔄 Review Workflow
+
+```text
+User submits source code
+            ↓
+FastAPI receives request
+            ↓
+LangChain creates prompt
+            ↓
+Gemini analyzes code
+            ↓
+Review generated
+            ↓
+Review saved to PostgreSQL
+            ↓
+Response returned to user
+```
+
+#
 
 ---
 
 # 👨‍💻 Author
 
 **Anurag Sharma**
+
