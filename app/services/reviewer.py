@@ -11,7 +11,7 @@ def review_code(code: str, language: str):
         ).content
 
     except Exception as e:
-        return f"Gemini Error: {str(e)}"
+        review = f"Gemini Error: {str(e)}"
 
     db = SessionLocal()
 
@@ -23,9 +23,16 @@ def review_code(code: str, language: str):
 
     db.add(review_record)
     db.commit()
+    db.refresh(review_record)
+
+    response = {
+        "id": review_record.id,
+        "review": review
+    }
+
     db.close()
 
-    return review
+    return response
 
 
 def get_all_reviews():

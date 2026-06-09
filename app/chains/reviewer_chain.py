@@ -13,7 +13,7 @@ prompt = PromptTemplate(
 )
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
+    model="gemini-2.5-flash",
     temperature=0.3
 )
 

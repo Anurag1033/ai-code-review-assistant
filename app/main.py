@@ -6,7 +6,6 @@ from fastapi import (
     HTTPException
 )
 
-
 from app.schema.review import ReviewRequest
 
 from app.services.reviewer import (
@@ -22,6 +21,7 @@ from app.services.language_detector import detect_language
 
 from app.db.database import engine
 from app.db.models import Base
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -50,7 +50,34 @@ def review(request: ReviewRequest):
     return {
         "filename": "inline_input",
         "language": language,
-        "review": result
+        "id": result["id"],
+        "review": result["review"]
+    }
+
+
+@app.post("/upload-review")
+async def upload_review(
+    file: UploadFile = File(...)
+):
+
+    content = await file.read()
+
+    code = content.decode("utf-8")
+
+    language = detect_language(
+        file.filename
+    )
+
+    result = review_code(
+        code,
+        language
+    )
+
+    return {
+        "filename": file.filename,
+        "language": language,
+        "id": result["id"],
+        "review": result["review"]
     }
 
 
